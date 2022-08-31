@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "strict": true,
+        "outDir": "dist",
+        "lib": ["ES2019"]
+    },
+    "files": [
+        "src/main.ts"
+    ]
+}
