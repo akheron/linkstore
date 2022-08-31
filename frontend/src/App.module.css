@@ -1,0 +1,51 @@
+:global * {
+    box-sizing: border-box;
+}
+
+:global body {
+    margin: 0;
+    padding: 0;
+    font-family: "Open Sans", "Helvetica", "Verdana", sans-serif;
+    font-size: 20px;
+}
+
+.app {
+    padding: 20px;
+}
+
+.searchBar {
+    display: flex;
+    align-items: center;
+}
+
+.searchBar input {
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid rgba(186, 189, 182, 1);
+    border-radius: 3px;
+    color: rgba(186, 189, 182, 1);
+    padding: 12px;
+    min-width: 150px;
+    max-width: 300px;
+}
+
+.link {
+}
+
+.link a {
+    text-decoration: none;
+    color: rgba(17, 17, 170, 1);
+}
+
+.link .date {
+    color: rgba(119, 119, 119, 1);
+}
+
+.hgap {
+    margin-right: 25px;
+}
+
+.vgap {
+    margin-bottom: 25px;
+}
+
