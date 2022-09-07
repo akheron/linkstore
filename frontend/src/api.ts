@@ -25,24 +25,18 @@ export interface LinksResponse {
   total: number
 }
 
-const pageSize = 20
-
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: '/' }),
   endpoints: (builder) => ({
-    links: builder.query<LinksResponse, { searchText: string; start: number }>({
+    links: builder.query<
+      LinksResponse,
+      { query: string; start: number; pageSize: number }
+    >({
       query: (arg) =>
-        `/api/?search=${encodeURIComponent(arg.searchText)}&start=${
-          arg.start
-        }&count=${pageSize}`,
-      transformResponse: (data: JsonOf<LinksResponse>) => ({
-        ...data,
-        items: data.items.map((item) => ({
-          ...item,
-          time: new Date(item.time),
-        })),
-      }),
+        `/api/?q=${encodeURIComponent(arg.query)}&start=${arg.start}&count=${
+          arg.pageSize
+        }`,
     }),
   }),
 })

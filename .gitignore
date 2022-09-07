@@ -1,3 +1,8 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
 node_modules
 yarn-error.log
 .parcel-cache

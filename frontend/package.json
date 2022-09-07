@@ -12,6 +12,8 @@
     "@reduxjs/toolkit": "^1.8.5",
     "@types/react": "^18.0.18",
     "@types/react-dom": "^18.0.6",
+    "date-fns": "^2.29.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "parcel": "^2.7.0",
     "postcss": "^8.2.1",
     "postcss-modules": "^4.3.0",

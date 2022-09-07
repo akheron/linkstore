@@ -1,0 +1,55 @@
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.searchBar {
+    display: flex;
+    align-items: center;
+}
+
+.searchBar input {
+    font-family: inherit;
+    font-size: inherit;
+    border: 1px solid rgb(186, 189, 182);
+    border-radius: 3px;
+    color: #000;
+    padding: 12px;
+    min-width: 150px;
+    max-width: 300px;
+}
+
+.new {
+    color: rgb(17, 17, 170);
+}
+
+.link {
+}
+
+.link a {
+    text-decoration: none;
+    color: rgb(17, 17, 170);
+}
+
+.link .tag {
+    display: inline-block;
+    color: rgb(170, 85, 17);
+}
+
+.link .date {
+    color: rgb(119, 119, 119);
+}
+
+.link .action {
+    color: rgb(204, 204, 204);
+}
+
+.pagination {
+    display: flex;
+    gap: 16px;
+}
+
+.pagination button {
+    color: rgb(204, 204, 204);
+}
