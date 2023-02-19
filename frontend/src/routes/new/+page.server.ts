@@ -1,25 +1,27 @@
-import { error, fail, redirect } from '@sveltejs/kit'
-import { API_URL } from '$lib/server/env'
+import { fail, redirect } from '@sveltejs/kit'
 import type { Actions } from './$types'
+import { LinkBody } from '../../lib/server/schemas'
 
 export const actions = {
-  default: async ({ request, fetch }) => {
+  default: async ({ request, locals: { db } }) => {
     const form = await request.formData()
-    const body = {
+    const body = LinkBody.safeParse({
       href: form.get('href'),
       description: form.get('description'),
       extended: form.get('extended'),
       tags: form.get('tags')?.toString().split(/\s+/).filter(Boolean) || [],
       shared: true,
       toRead: false,
-    }
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
     })
-    if (response.status === 400) return fail(400, { error: await response.text() })
-    if (response.status === 201) throw redirect(303, '/')
-    throw error(500, 'Something went wrong')
+    if (!body.success) {
+      return fail(400, {
+        error: body.error.issues.map((issue) => `${issue.path}: ${issue.message}`).join(', '),
+      })
+    }
+    const result = await db.createLink(body.data)
+    if (result.type === 'AlreadyExists') {
+      return fail(400, { error: 'Link already exists' })
+    }
+    throw redirect(303, '/')
   },
 } satisfies Actions

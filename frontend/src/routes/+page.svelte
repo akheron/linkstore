@@ -29,7 +29,7 @@
 
   page.subscribe(({ url }) => {
     const startParam = url.searchParams.get('start')
-    const start = startParam ? parseInt(startParam) : 0
+    const start = startParam ? parseInt(startParam, 10) : 0
     currentPage = Math.floor(start / pageSize) + 1
   })
 

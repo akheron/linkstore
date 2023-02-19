@@ -1,7 +1,7 @@
 <script lang="ts">
   import { enhance, type SubmitFunction } from '$app/forms'
   import format from 'date-fns/format/index.js'
-  import type { LinkData } from './types'
+  import type { LinkData } from '$lib/types'
 
   export let link: LinkData
 
