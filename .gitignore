@@ -8,7 +8,6 @@ yarn-error.log
 .parcel-cache
 /build
 /.svelte-kit
-/package
 .env
 .env.*
 !.env.example
