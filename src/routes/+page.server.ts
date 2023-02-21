@@ -1,12 +1,16 @@
-import { error } from '@sveltejs/kit'
+import { fail } from '@sveltejs/kit'
 import type { LinkData } from '$lib/types'
 import { Id, PaginatedSearch } from '$lib/server/schemas'
-import { parse } from '$lib/server/utils'
+import { parseOrDefault, stringifyError } from '$lib/server/utils'
 import type { Actions, PageServerLoad } from './$types'
 
 export const load = (async ({ url, locals: { db } }) => {
   const pageSize = 20
-  const { q, page = 1 } = parse(PaginatedSearch, Object.fromEntries(url.searchParams))
+  const { q, page = 1 } = parseOrDefault(
+    PaginatedSearch,
+    { q: '', page: 1 },
+    Object.fromEntries(url.searchParams)
+  )
   const start = (page - 1) * pageSize
 
   const total = await db.linkCount(q)
@@ -22,9 +26,13 @@ export const load = (async ({ url, locals: { db } }) => {
 
 export const actions = {
   deleteLink: async ({ request, locals: { db } }) => {
-    const data = parse(Id, Object.fromEntries((await request.formData()).entries()))
-    if (!(await db.deleteLink(data.id))) {
-      throw error(404)
+    const input = Object.fromEntries((await request.formData()).entries())
+    const result = Id.safeParse(input)
+    if (!result.success) {
+      return fail(400, { message: stringifyError(result.error) })
+    }
+    if (!(await db.deleteLink(result.data.id))) {
+      return fail(404, { message: 'No such link' })
     }
   },
 } satisfies Actions

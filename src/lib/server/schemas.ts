@@ -10,7 +10,7 @@ export type Config = z.infer<typeof Config>
 
 export const LinkBody = z.object({
   href: z.string().url(),
-  description: z.string(),
+  description: z.string().min(1),
   extended: z.string(),
   shared: z.boolean(),
   toRead: z.boolean(),
