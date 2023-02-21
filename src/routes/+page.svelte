@@ -1,65 +1,50 @@
 <script lang="ts">
-  import { browser } from '$app/environment'
+  import type { FormEventHandler } from 'svelte/elements'
   import { goto } from '$app/navigation'
-  import { page } from '$app/stores'
   import type { PageData } from './$types'
   import Link from './Link.svelte'
   import Pagination from './Pagination.svelte'
 
-  const pageSize = 10
+  export let data: PageData
+  let searchText = ''
 
-  function url(search: string, page: number) {
+  const url = (search: string, page: number) => {
     const searchParams = new URLSearchParams()
     if (page > 1) {
-      searchParams.set('start', ((page - 1) * pageSize).toString())
+      searchParams.set('page', page.toString())
     }
     if (search) {
       searchParams.set('q', search)
     }
     const params = searchParams.toString()
-    if (params !== '') {
-      return `/?${params}`
-    }
-    return '/'
+    return params !== '' ? `/?${params}` : '/'
   }
 
-  export let data: PageData
-  let currentSearch = ''
-  let currentPage = 1
-
-  page.subscribe(({ url }) => {
-    const startParam = url.searchParams.get('start')
-    const start = startParam ? parseInt(startParam, 10) : 0
-    currentPage = Math.floor(start / pageSize) + 1
-  })
-
   let timeout: number | undefined = undefined
-  $: if (browser) {
+  const onSearchInput: FormEventHandler<HTMLInputElement> = (e) => {
+    searchText = e.currentTarget.value
+
     clearTimeout(timeout)
     timeout = window.setTimeout(async () => {
-      await goto(url(currentSearch, currentPage), { replaceState: true, keepFocus: true })
+      await goto(url(searchText, 1), { replaceState: true, keepFocus: true })
     }, 500)
   }
 </script>
 
 <nav>
-  <input type="text" placeholder="search" bind:value={currentSearch} />
-  <span>{data.links.total} links</span>
+  <input type="text" placeholder="search" on:input={onSearchInput} />
+  <span>{data.total} links</span>
   <a href="/new">New</a>
 </nav>
 <div>
-  {#each data.links.items as link, i (link.id)}
+  {#each data.links as link, i (link.id)}
     {#if i !== 0}
       <hr />
     {/if}
     <Link {link} />
   {/each}
   <hr />
-  <Pagination
-    page={currentPage}
-    pages={Math.ceil(data.links.total / pageSize)}
-    url={(newPage) => url(currentSearch, newPage)}
-  />
+  <Pagination page={data.page} pages={data.pages} url={(newPage) => url(searchText, newPage)} />
 </div>
 
 <style>

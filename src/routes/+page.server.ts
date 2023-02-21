@@ -4,18 +4,21 @@ import { Id, PaginatedSearch } from '$lib/server/schemas'
 import { parse } from '$lib/server/utils'
 import type { Actions, PageServerLoad } from './$types'
 
-interface LinksResponse {
-  items: LinkData[]
-  start: number
-  total: number
-}
-
 export const load = (async ({ url, locals: { db } }) => {
-  const { q, start, count } = parse(PaginatedSearch, Object.fromEntries(url.searchParams))
+  const pageSize = 20
+  const { q, page = 1 } = parse(PaginatedSearch, Object.fromEntries(url.searchParams))
+  const start = (page - 1) * pageSize
+
   const total = await db.linkCount(q)
-  const items = await db.searchLinks(q, start, count)
-  return { links: { items, start, total } }
-}) satisfies PageServerLoad<{ links: LinksResponse }>
+  const links = await db.searchLinks(q, start, pageSize)
+
+  return { links, total, page, pages: Math.ceil(total / pageSize) }
+}) satisfies PageServerLoad<{
+  links: LinkData[]
+  total: number
+  page: number
+  pages: number
+}>
 
 export const actions = {
   deleteLink: async ({ request, locals: { db } }) => {

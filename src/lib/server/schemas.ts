@@ -20,8 +20,7 @@ export type LinkBody = z.infer<typeof LinkBody>
 
 export const PaginatedSearch = z.object({
   q: z.string().optional(),
-  start: z.coerce.number().int().min(0).default(0),
-  count: z.coerce.number().int().min(1).max(100).default(20),
+  page: z.coerce.number().int().min(1).optional(),
 })
 
 export const Id = z.object({ id: z.coerce.number().int().min(1) })
