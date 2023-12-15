@@ -1,0 +1,33 @@
+<div hx-boost="true">
+  {% match first_page %}
+    {% when Some with (first_page) %}
+      <span><a href={{ first_page }}>&laquo;</a></span>
+    {% when None %}
+  {% endmatch %}
+  {% match prev_page %}
+    {% when Some with (prev_page) %}
+      <span><a href={{ prev_page }}>&lsaquo;</a></span>
+    {% when None %}
+  {% endmatch %}
+  <span>{{ page }}</span>
+  {% match next_page %}
+    {% when Some with (next_page) %}
+      <span><a href={{ next_page }}>&rsaquo;</a></span>
+    {% when None %}
+  {% endmatch %}
+  {% match last_page %}
+    {% when Some with (last_page) %}
+      <span><a href={{ last_page }}>&raquo;</a></span>
+    {% when None %}
+  {% endmatch %}
+  <style>
+    me {
+      display: flex;
+      justify-content: center;
+
+      & > span {
+        padding: 0 6px;
+      }
+    }
+  </style>
+</div>

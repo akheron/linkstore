@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 20px;
+        margin: 8px;
+      }
+      a {
+        color: #1111aa;
+        text-decoration: none;
+      }
+    </style>
+    <script src="https://unpkg.com/htmx.org@1.9.9" integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gnat/css-scope-inline/script.js"></script>
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+  </body>
+</html>
