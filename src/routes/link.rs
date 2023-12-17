@@ -1,6 +1,6 @@
 use askama_axum::{IntoResponse, Response};
 use axum::extract::{Form, Path};
-use axum::http::HeaderName;
+use axum::http::{HeaderName, StatusCode};
 use axum::Extension;
 use serde::Deserialize;
 use url::Url;
@@ -54,7 +54,7 @@ impl IntoResponse for CreateLinkStatus {
             CreateLinkStatus::Created => {
                 [(HeaderName::from_static("hx-location"), "/")].into_response()
             }
-            CreateLinkStatus::Error(msg) => msg.into_response(),
+            CreateLinkStatus::Error(msg) => (StatusCode::BAD_REQUEST, msg).into_response(),
         }
     }
 }

@@ -2,12 +2,17 @@
 
 {% block content %}
 <div>
-  <form hx-post="/link" hx-target="#error">
+  <form hx-post="/link"
+    hx-on::response-error="document.getElementById('error').innerText = event.detail.xhr.response"
+    {% if in_window %}
+    hx-on::after-request="!event.detail.failed && window.close()"
+    {% endif %}
+  >
     <div>
-      <input name="href" placeholder="url">
+      <input name="href" placeholder="url" value="{{ url }}">
     </div>
     <div>
-      <input name="description" placeholder="description">
+      <input name="description" placeholder="description" value="{{ title }}">
     </div>
     <div>
       <textarea name="extended" placeholder="long description"></textarea>
@@ -17,7 +22,11 @@
     </div>
     <div>
       <button type="submit">save</button>
-      <a href="/" hx-boost="true" hx-target="body">cancel</a>
+      {% if in_window %}
+      <button type="button" onclick="window.close()">close</button>
+      {% else %}
+      <a href="/" hx-boost="true">cancel</a>
+      {% endif %}
     </div>
   </form>
 
