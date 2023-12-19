@@ -10,12 +10,15 @@ async-trait = "0.1"
 axum = "0.7"
 axum-extra = { version = "0.9", features = ["query"] }
 chrono = "0.4"
+cookie = { version = "0.18", features = ["signed"] }
+envy = "0.4"
 log = "0.4"
 eyre = "0.6"
 serde = { version = "1.0", features = ["derive"] }
 sqlx = { version = "0.7" , features = ["runtime-tokio", "postgres", "chrono"] }
 tokio = { version = "1", features = ["full"] }
 tower = { version = "0.4", features = ["util"] }
+tower-cookies = { version = "0.10", features = ["signed"] }
 tower-http = { version = "0.5", features = ["compression-gzip", "fs", "trace"] }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 url = "2.5"
