@@ -1,8 +1,6 @@
 *
-!/src/
-!/.npmrc
-!/package.json
-!/package-lock.json
-!/svelte.config.js
-!/tsconfig.json
-!/vite.config.ts
+!Cargo.toml
+!Cargo.lock
+!assets/
+!src/
+!templates/

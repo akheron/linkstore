@@ -1,16 +1,13 @@
-FROM node:18-alpine AS builder
-
+FROM rust AS builder
 WORKDIR /app
-COPY package.json package-lock.json .
-RUN npm ci
 COPY . .
-RUN npm exec -c 'svelte-kit sync' && npm run build
+RUN cargo build --release
 
-FROM node:18-alpine
-WORKDIR /app
-COPY package.json package-lock.json .
-RUN npm ci --omit=dev
-COPY --from=builder /app/build /app/build
+FROM debian:bookworm-slim
+RUN mkdir /assets
+COPY --from=builder /app/assets /assets
+COPY --from=builder /app/target/release/linkstore /usr/local/bin
 
+ENV ASSET_PATH=/assets
 EXPOSE 8080
-CMD ["node", "build/index.js"]
+CMD ["linkstore"]

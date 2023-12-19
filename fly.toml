@@ -6,8 +6,9 @@ kill_timeout = 5
 processes = []
 
 [env]
-  LINKSTORE_PORT = "8080"
-  BASIC_AUTH_USER = "akheron"
+  ENV = "prod"
+  BIND = "0.0.0.0:8080"
+  ASSET_PATH = "assets"
 
 [experimental]
   allowed_public_ports = []
