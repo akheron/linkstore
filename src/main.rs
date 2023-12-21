@@ -4,6 +4,7 @@ mod config;
 mod db;
 mod result;
 mod routes;
+mod util;
 
 use crate::auth::LoginRequired;
 use crate::config::{Config, Env};

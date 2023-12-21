@@ -12,6 +12,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tower_cookies::Cookies;
 
 use crate::config::Config;
+use crate::util::urlencode;
 
 static COOKIE_NAME: &str = "session";
 
@@ -87,15 +88,14 @@ where
         if is_logged_in {
             Ok(Self)
         } else {
-            let pq = parts
+            let next = parts
                 .uri
                 .path_and_query()
                 .map(|pq| pq.as_str())
                 .unwrap_or("/");
-            let next = url::form_urlencoded::byte_serialize(pq.as_bytes()).collect::<String>();
             Err((
                 StatusCode::SEE_OTHER,
-                [(LOCATION, format!("/login?next={}", next))],
+                [(LOCATION, format!("/login?next={}", urlencode(next)))],
             )
                 .into_response())
         }
