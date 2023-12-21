@@ -27,11 +27,12 @@ pub async fn index_route(
     Extension(dbc): Extension<Database>,
     query: Query<IndexQuery>,
 ) -> Result<IndexTemplate> {
-    let total = link_count(&dbc, query.q.as_deref()).await?;
-    let links = search_links(&dbc, query.q.as_deref(), query.page.unwrap_or(1), PAGE_SIZE).await?;
+    let q = query.q.as_deref();
+    let total = link_count(&dbc, q).await?;
+    let links = search_links(&dbc, q, query.page.unwrap_or(1), PAGE_SIZE).await?;
     Ok(IndexTemplate {
         links,
         nav: Nav::new(query.q.clone(), total),
-        pagination: Pagination::new(query.page.unwrap_or(1), total, PAGE_SIZE),
+        pagination: Pagination::new(q, query.page.unwrap_or(1), total, PAGE_SIZE),
     })
 }

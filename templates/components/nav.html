@@ -1,5 +1,14 @@
 <nav>
-  <input type="text" placeholder="search" value="{{ q }}">
+  <input
+    type="text"
+    placeholder="search"
+    name="q"
+    value="{{ q }}"
+    hx-get="/"
+    hx-trigger="keyup delay:1s"
+    hx-target="body"
+    hx-push-url="true"
+  >
   <span>{{ total }} links</span>
   <a href="/new" hx-boost="true">New</a>
   <a href="/logout">Logout</a>
