@@ -73,7 +73,7 @@ fn search_where(search_text: Option<&str>, first_param_index: i32) -> (String, V
     let search_terms = text.split_whitespace();
     let where_clause = format!("WHERE {}", search_terms.clone().enumerate().map(|(index, _)| {
         let p = index as i32 * 2 + first_param_index;
-        format!("(href LIKE ${p} OR description LIKE ${p} OR extended LIKE ${p} OR (SELECT bool_or(t LIKE ${p1}) FROM unnest(tags) t))", p = p, p1 = p + 1)
+        format!("(href LIKE ${p} OR description ILIKE ${p} OR extended ILIKE ${p} OR (SELECT bool_or(t ILIKE ${p1}) FROM unnest(tags) t))", p = p, p1 = p + 1)
     }).collect::<Vec<String>>().join(" AND "));
     let params = search_terms.flat_map(|term| [format!("%{}%", term), format!("{}%", term)]);
     (where_clause, params.collect())
