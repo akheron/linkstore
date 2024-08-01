@@ -1,17 +1,37 @@
-use askama::Template;
+use crate::components::style;
+use maud::{html, Markup};
 
-#[derive(Template)]
-#[template(path = "components/nav.html")]
-pub struct Nav {
-    q: String,
-    total: u32,
-}
+pub fn nav(q: Option<String>, total: u32) -> Markup {
+    html! {
+        nav {
+            input
+                type="text"
+                placeholder="search"
+                name="q"
+                value=[q]
+                hx-get="/"
+                hx-trigger="keyup delay:1s"
+                hx-target="body"
+                hx-push-url="true";
+            span { (total) " links" }
+            a href="/new" hx-boost="true" { "New" }
+            a href="/logout" { "Logout" }
+            (style(r#"
+                me {
+                    margin-bottom: 20px;
+                    display: flex;
+                    align-items: center;
 
-impl Nav {
-    pub fn new(q: Option<String>, total: u32) -> Self {
-        Self {
-            q: q.unwrap_or_default(),
-            total,
+                    & > * {
+                        display: inline-block;
+                        margin-right: 16px;
+                    }
+
+                    & > style {
+                        display: none;
+                    }
+                }
+            "#))
         }
     }
 }

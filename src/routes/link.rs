@@ -1,7 +1,6 @@
-use askama_axum::{IntoResponse, Response};
 use axum::extract::{Form, Path};
 use axum::http::HeaderName;
-use axum::response::Html;
+use axum::response::{Html, IntoResponse, Response};
 use axum::Extension;
 use serde::Deserialize;
 use url::Url;

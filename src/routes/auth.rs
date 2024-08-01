@@ -1,20 +1,42 @@
-use crate::auth::{login, logout};
+use crate::auth;
+use crate::components::{page, style};
 use crate::config::Config;
-use askama::Template;
-use askama_axum::{IntoResponse, Response};
 use axum::extract::Query;
 use axum::http::header::LOCATION;
 use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
 use axum::{Extension, Form};
+use maud::{html, Markup};
 use serde::Deserialize;
 use tower_cookies::Cookies;
 
-#[derive(Template)]
-#[template(path = "login.html")]
-pub struct LoginTemplate<'a> {
-    username: &'a str,
-    next: &'a str,
-    login_error: bool,
+pub fn login(username: &str, next: &str, login_error: bool) -> Markup {
+    html! {
+        form method="post" {
+            input type="hidden" name="next" value=(next);
+            div {
+                input name="username" placeholder="username" value=(username);
+            }
+            div {
+                input name="password" placeholder="password" type="password";
+            }
+            div {
+                button type="submit" { "login" }
+            }
+            @if login_error {
+                div.error { "Invalid username or password" }
+            }
+            (style(r#"
+                me {
+                    .error {
+                        padding-top: 8px;
+                        font-size: 16px;
+                        color: red;
+                    }
+                }
+            "#))
+        }
+    }
 }
 
 #[derive(Deserialize)]
@@ -23,11 +45,11 @@ pub struct LoginFormQuery {
 }
 
 pub async fn login_form_route(q: Option<Query<LoginFormQuery>>) -> Response {
-    LoginTemplate {
-        username: "",
-        next: q.as_deref().map(|q| q.next.as_str()).unwrap_or("/"),
-        login_error: false,
-    }
+    page(login(
+        "",
+        q.as_deref().map(|q| q.next.as_str()).unwrap_or("/"),
+        false,
+    ))
     .into_response()
 }
 
@@ -44,18 +66,10 @@ pub async fn login_route(
     Form(body): Form<LoginForm>,
 ) -> Response {
     if body.username == config.username && body.password == config.password {
-        login(&config, &cookies);
+        auth::login(&config, &cookies);
         (StatusCode::SEE_OTHER, [(LOCATION, body.next)]).into_response()
     } else {
-        (
-            StatusCode::BAD_REQUEST,
-            LoginTemplate {
-                username: &body.username,
-                next: &body.next,
-                login_error: true,
-            },
-        )
-            .into_response()
+        page(login(&body.username, &body.next, true)).into_response()
     }
 }
 
@@ -63,6 +77,6 @@ pub async fn logout_route(
     Extension(config): Extension<Config>,
     cookies: Cookies,
 ) -> impl IntoResponse {
-    logout(&config, &cookies);
+    auth::logout(&config, &cookies);
     (StatusCode::SEE_OTHER, [(LOCATION, "/")])
 }
