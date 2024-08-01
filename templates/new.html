@@ -2,12 +2,8 @@
 
 {% block content %}
 <div>
-  <form hx-post="/link"
-    hx-on::response-error="document.getElementById('error').innerText = event.detail.xhr.response"
-    {% if in_window %}
-    hx-on::after-request="!event.detail.failed && window.close()"
-    {% endif %}
-  >
+  <form>
+    <input type="hidden" name="in_window" value="{{ in_window }}">
     <div>
       <input name="href" placeholder="url" value="{{ url }}">
     </div>
@@ -21,7 +17,7 @@
       <input name="tags" placeholder="tags"/>
     </div>
     <div>
-      <button type="submit">save</button>
+      <button hx-post="/link" hx-target="#error">save</button>
       {% if in_window %}
       <button type="button" onclick="window.close()">close</button>
       {% else %}

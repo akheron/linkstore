@@ -1,6 +1,7 @@
 use askama_axum::{IntoResponse, Response};
 use axum::extract::{Form, Path};
-use axum::http::{HeaderName, StatusCode};
+use axum::http::HeaderName;
+use axum::response::Html;
 use axum::Extension;
 use serde::Deserialize;
 use url::Url;
@@ -10,6 +11,7 @@ use crate::result::Result;
 
 #[derive(Deserialize, Debug)]
 pub struct CreateLinkBody {
+    in_window: bool,
     href: String,
     description: String,
     extended: String,
@@ -40,21 +42,25 @@ pub async fn create_link_route(
     if !created {
         return Ok(CreateLinkStatus::Error("Link already exists"));
     }
-    Ok(CreateLinkStatus::Created)
+    Ok(CreateLinkStatus::Created(body.in_window))
 }
 
 pub enum CreateLinkStatus {
-    Created,
+    Created(bool),
     Error(&'static str),
 }
 
 impl IntoResponse for CreateLinkStatus {
     fn into_response(self) -> Response {
         match self {
-            CreateLinkStatus::Created => {
-                [(HeaderName::from_static("hx-location"), "/")].into_response()
+            CreateLinkStatus::Created(in_window) => {
+                if in_window {
+                    Html("<script>window.close()</script>").into_response()
+                } else {
+                    [(HeaderName::from_static("hx-location"), "/")].into_response()
+                }
             }
-            CreateLinkStatus::Error(msg) => (StatusCode::BAD_REQUEST, msg).into_response(),
+            CreateLinkStatus::Error(msg) => msg.into_response(),
         }
     }
 }
