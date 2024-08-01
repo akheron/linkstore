@@ -23,7 +23,7 @@ pub fn page(content: Markup) -> Markup {
                       text-decoration: none;
                     }
                 "#))
-                script src="/assets/htmx.min.js" {}
+                script src="/assets/htmx.2.0.1.min.js" {}
                 script src="/assets/css-scope-inline.js" {}
             }
             body {
