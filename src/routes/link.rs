@@ -1,12 +1,14 @@
+use crate::db::{create_link, delete_link, CreateLink, Database};
+use crate::result::Result;
+use crate::routes::index::{index, IndexQuery};
 use axum::extract::{Form, Path};
 use axum::http::HeaderName;
 use axum::response::{Html, IntoResponse, Response};
 use axum::Extension;
+use axum_extra::extract::Query;
+use maud::Markup;
 use serde::Deserialize;
 use url::Url;
-
-use crate::db::{create_link, delete_link, CreateLink, Database};
-use crate::result::Result;
 
 #[derive(Deserialize, Debug)]
 pub struct CreateLinkBody {
@@ -72,7 +74,8 @@ pub struct DeleteLinkParams {
 pub async fn delete_link_route(
     Extension(dbc): Extension<Database>,
     Path(DeleteLinkParams { id }): Path<DeleteLinkParams>,
-) -> Result<()> {
+    Query(query): Query<IndexQuery>,
+) -> Result<Markup> {
     delete_link(&dbc, id).await?;
-    Ok(())
+    index(&dbc, query).await
 }
